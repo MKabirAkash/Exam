@@ -22,3 +22,10 @@ class Gadgets(models.Model):
 
     def __str__(self):
         return str(self.name)
+
+class GotGadgetPermission(models.Model):
+    employee= models.ForeignKey(Employees,on_delete=models.SET_NULL,null=True)
+    permitted_at=models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.permitted_at)
