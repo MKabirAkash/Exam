@@ -12,7 +12,6 @@ class Employees(models.Model):
 
 
 class Gadgets(models.Model):
-    employee = models.ForeignKey(Employees,on_delete=models.SET_NULL,null=True)
     name = models.CharField(max_length=200,blank=False,null=False)
     present_con = models.CharField(max_length=200,blank=True,null=True)
     last_chek_con=models.CharField(max_length=200,blank=True,null=True)
