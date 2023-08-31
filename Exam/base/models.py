@@ -17,7 +17,7 @@ class Gadgets(models.Model):
     last_chek_con=models.CharField(max_length=200,blank=True,null=True)
     is_checked_out = models.BooleanField(default=False)
     last_checkout_at = models.DateTimeField(auto_now_add=False,blank=True,null=True)
-    last_return_at = models.DateTimeField(auto_now_add=False)
+    last_return_at = models.DateTimeField(auto_now_add=False,blank=True,null=True)
     _id = models.AutoField(editable=False,primary_key=True)
 
     def __str__(self):
