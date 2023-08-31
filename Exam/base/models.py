@@ -13,11 +13,7 @@ class Employees(models.Model):
 
 class Gadgets(models.Model):
     name = models.CharField(max_length=200,blank=False,null=False)
-    present_con = models.CharField(max_length=200,blank=True,null=True)
-    last_chek_con=models.CharField(max_length=200,blank=True,null=True)
     is_checked_out = models.BooleanField(default=False)
-    last_checkout_at = models.DateTimeField(auto_now_add=False,blank=True,null=True)
-    last_return_at = models.DateTimeField(auto_now_add=False,blank=True,null=True)
     _id = models.AutoField(editable=False,primary_key=True)
 
     def __str__(self):
@@ -29,3 +25,18 @@ class GotGadgetPermission(models.Model):
 
     def __str__(self):
         return str(self.permitted_at)
+
+class Gadgettrackinfo(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True,blank=True,null=True)
+    employee = models.ForeignKey(Employees,on_delete=models.SET_NULL,null=True)
+    gadget = models.ForeignKey(Gadgets,on_delete=models.SET_NULL,null=True)
+    checkout_at = models.DateTimeField(auto_now_add=False,blank=True,null=True)
+    return_at = models.DateTimeField(auto_now_add=False,blank=True,null=True)
+    is_returned= models.BooleanField(default=False)
+    return_con = models.CharField(max_length=200,blank=True,null=True)
+    last_chek_con=models.CharField(max_length=200,blank=True,null=True)
+    _id=models.AutoField(editable=False,primary_key=True)
+    
+    def __str__(self):
+        return str(self.created_at)
+

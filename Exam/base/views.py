@@ -6,7 +6,7 @@ from .serializer import AdminSerializer,Employeeserializer
 from rest_framework import status
 from django.views.decorators.csrf import csrf_exempt
 from .models import Employees
-from .models import Gadgets,GotGadgetPermission
+from .models import Gadgets,GotGadgetPermission,Gadgettrackinfo
 
 
 #VIEW FOR CREATING SUPERUSER
@@ -47,15 +47,13 @@ def addemployee(request):
 def addgadget(request):
     try:
         name=request.POST['name']
-        condition=request.POST['condition']
         gadget=Gadgets.objects.create(
-            name=name,
-            present_con=condition
+            name=name
         )
         gadget.save()
-        return Response({'message': 'Gadget added successfully. (API instruction :PROVIDE A VALID name ,condittion AS REQUEST DATA as aname=set_your_name,condition=set a value between 1-100 USING POST METHOD TO ADD A NEW EMPLOYEE )'}, status=status.HTTP_201_CREATED)
+        return Response({'message': 'Gadget added successfully. (API instruction :PROVIDE A VALID name ,AS REQUEST DATA as aname=set_your_name USING POST METHOD TO ADD A NEW EMPLOYEE )'}, status=status.HTTP_201_CREATED)
     except:
-        return Response({'message': ' (API instruction :PROVIDE A VALID name,condition AS REQUEST DATA   as name=set_your_name,condition=set a value between 1-100 TO ADD A NEW GADGET )'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'message': ' (API instruction :PROVIDE A VALID name, REQUEST DATA   as name=set_your_name TO ADD A NEW GADGET )'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -79,14 +77,42 @@ def addselected(request,id):
 #VIEW FOR ADDING EMPLOYEE TO PERMIT TO HAVE GADGET(for adding individual employye)
 @api_view(['POST'])
 @csrf_exempt
-
 def addall(request):
     try:
         emp=Employees.objects.all()
-
         for i in emp:
             permitted_emp=GotGadgetPermission.objects.create(employee=i)
             permitted_emp.save()
         return Response({'message': 'permisson granted  successfully to all employees. ( FOR GADGET PERMISSION )'}, status=status.HTTP_201_CREATED)
     except:
         return Response({'message': '(HIT THE API TO PERMIT ALL FOR GADGET )'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+@api_view(['POST'])
+@csrf_exempt
+def allotgadget(request):
+    try:
+        emp_id=int(request.POST['employee_id'])
+        gad_id=int(request.POST['gadget_id'])
+        condition=request.POST['condition']
+        print(condition)
+        emp=Employees.objects.get(_id=emp_id)
+        gadget=Gadgets.objects.get(_id=gad_id)
+        trackinfo=Gadgettrackinfo.objects.create(
+            employee=emp,
+            gadget=gadget,
+            last_chek_con=condition
+        )
+        time=trackinfo.created_at
+        gadget.is_checked_out=True
+        trackinfo.checkout_at=time
+        print(trackinfo.checkout_at)
+        trackinfo.is_returned=True
+        trackinfo.save()
+        gadget.save()
+       
+        return Response({'message':'Gadget alloted to Selected Employee.(API INFO : add as employee_id=desired_employee_id ,condition=gadget_condition_now and gadget_id=desired_gadget_id  TO ALLOT GADGET TO AN EMPLOYEE.MAKE SURE THAT  THE PRODUCT AND EMPLOYEE EXISTS AND GADGET IS NOT ALREADY ALLOTED TO SOMEONE)'})
+    except:
+        return Response({'message':'(API INFO : add as employee_id=desired_employee_id,condition=gadget_condition_now  and gadget_id=desired_gadget_id  TO ALLOT GADGET TO AN EMPLOYEE,MAKE SURE THAT  THE PRODUCT AND EMPLOYEE EXISTS AND GADGET IS NOT ALREADY ALLOTED TO SOMEONE)'},status=status.HTTP_400_BAD_REQUEST)
