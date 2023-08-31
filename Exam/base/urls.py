@@ -8,5 +8,6 @@ urlpatterns = [
     path('addgadget/', views.addgadget,name="gadgetadd"),
     path('addselected/<str:id>', views.addselected,name="addselected"),
     path('addall/', views.addall,name="addall"),
-    path('allotgadget/', views.allotgadget,name="allotgadget")
+    path('allotgadget/', views.allotgadget,name="allotgadget"),
+    path('returngadget/<str:id>', views.gadgetrecord,name="returngadget")
 ]
